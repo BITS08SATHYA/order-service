@@ -1,7 +1,11 @@
 package com.ecommerce.order.services;
 
 
+import com.ecommerce.order.clients.ProductServiceClient;
+import com.ecommerce.order.clients.UserServiceClient;
 import com.ecommerce.order.dtos.CartItemRequest;
+import com.ecommerce.order.dtos.ProductResponse;
+import com.ecommerce.order.dtos.UserResponse;
 import com.ecommerce.order.models.CartItem;
 import com.ecommerce.order.repositories.CartItemRepository;
 import jakarta.transaction.Transactional;
@@ -18,10 +22,28 @@ import java.util.Optional;
 public class CartService {
 
     private final CartItemRepository cartItemRepository;
+    private final ProductServiceClient productServiceClient;
+    private final UserServiceClient userServiceClient;
 
     @Modifying
     @Transactional
     public boolean addToCart(String userId, CartItemRequest request) {
+
+        ProductResponse productResponse = productServiceClient.getProductDetails(request.getProductId());
+
+        if (productResponse == null){
+            return false;
+        }
+
+        if (productResponse.getStockQuantity() < request.getQuantity()){
+            return false;
+        }
+
+        UserResponse userResponse = userServiceClient.getUserDetails(userId);
+
+        if (userResponse == null){
+            return false;
+        }
 
         CartItem existingCartItem = cartItemRepository.findByUserIdAndProductId(userId, request.getProductId());
         if (existingCartItem != null) {
