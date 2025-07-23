@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class RabbitMQConfiguration {
 
 
-    @Value("${spring.rabbitmq.queue.name}")
+    @Value("${rabbitmq.queue.name}")
     private String queueName;
 
-    @Value("${spring.rabbitmq.exchange.name}")
+    @Value("${rabbitmq.exchange.name}")
     private String exchangeName;
 
-    @Value("${spring.rabbitmq.routing.key}")
+    @Value("${rabbitmq.routing.key}")
     private String routingKey;
 
 
